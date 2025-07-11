@@ -1,4 +1,5 @@
 import api from "../axios";
+import {User} from '@/Infrastructure/Interfaces/User'
 
 interface LoginProps {
   email: string;
@@ -6,9 +7,12 @@ interface LoginProps {
 }
 
 export default async function login({ email, password }: LoginProps) {
-  const response = await api.post("/auth/login", {
+  const response = await api.post<User>("/auth/login", {
     email,
     password,
   });
-  return response.data;
+  return {
+    user: response.data.usuario,
+    token:response.data.token
+  };
 }

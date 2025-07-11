@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import z from "zod";
-import login from "@/lib/action/login";
+import { useRouter } from "next/navigation";
 
-import { Usuario } from "@/Infrastructure/Interfaces/User";
+import z from "zod";
+import login from "@/lib/actions/login";
 
 const loginSchema = z.object({
   email: z
@@ -16,9 +16,10 @@ const loginSchema = z.object({
 });
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState<Usuario>();
 
   const handlerButton = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,8 +27,8 @@ export default function LoginPage() {
     try {
       const data = await login({ email, password });
       if (data) {
-        setUser(data);
-        console.log(data);
+        localStorage.setItem("token", data.token);
+        router.push("/signup");
         return;
       }
       console.log("No Data");
@@ -37,7 +38,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-[80%] h-[80%] bg-blue-600 rounded-xl md:max-w-[400px] lg:max-w-[720px]">
+    <div className="w-[80%] h-[80%] bg-blue-600 rounded-xl  md:max-w-md lg:max-w-lg">
       <header className="w-full h-[20%] flex flex-col items-center justify-center">
         <h1 className="font-extrabold">Gestión de Proyectos</h1>
         <h2 className="text-center font-light">
